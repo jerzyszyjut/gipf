@@ -1,9 +1,9 @@
 #include <iostream>
-
-using namespace std;
+#include "controller.hpp"
 
 int main()
 {
-  cout << "Hello World!" << endl;
+  Controller controller = Controller();
+  controller.run();
   return 0;
 }
