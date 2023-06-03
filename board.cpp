@@ -25,13 +25,25 @@ void Board::printBoard()
   {
     std::vector<char> row = board[i];
     int spaces = abs(size - (i + 1));
-    for (int j = 0; j < spaces; j++)
-    {
-      std::cout << " ";
-    }
     for (int j = 0; j < row.size(); j++)
     {
-      std::cout << row[j] << " ";
+      if (j < spaces ||
+          j >= (row.size() - spaces))
+      {
+        std::cout << " ";
+      }
+      else
+      {
+        if (row[j] == NULL)
+        {
+          std::cout << "_";
+        }
+        else
+        {
+          std::cout << row[j];
+        }
+        std::cout << " ";
+      }
     }
     std::cout << std::endl;
   }
@@ -39,30 +51,42 @@ void Board::printBoard()
 
 void Board::initBoard(std::string boardString)
 {
-
-  // Board is hexagonal, so the number of rows is 2 * size - 1
-  /* Example:
-   W _ _ B
-  _ _ _ _ _
- _ _ W _ _ _
-B _ _ _ _ _ W
- _ W _ W _ _
-  _ _ _ _ _
-   W _ _ B
-  */
+  int lineCount = 0;
   do
   {
     std::string line = boardString.substr(0, boardString.find("\n"));
     boardString = boardString.substr(boardString.find("\n") + 1);
+
     std::vector<char> row;
+
+    int spaces = abs(size - (lineCount + 1));
+    for (int j = 0; j < spaces; j++)
+    {
+      row.push_back(NULL);
+    }
+
     for (int i = 0; i < line.length(); i++)
     {
       if (line[i] > ' ')
       {
-        row.push_back(line[i]);
+        if (line[i] == '_')
+        {
+          row.push_back(NULL);
+        }
+        else
+        {
+          row.push_back(line[i]);
+        }
       }
     }
+
+    for (int j = 0; j < spaces; j++)
+    {
+      row.push_back(NULL);
+    }
+
     board.push_back(row);
+    lineCount++;
   } while (boardString.length() > 1);
 }
 
