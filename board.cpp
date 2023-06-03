@@ -221,59 +221,37 @@ void Board::setField(char key, int index, char piece)
 
 std::vector<std::string> Board::getRow(std::string from, std::string to)
 {
-  int fromRow = from[0] - 'a' - 1;
-  int fromIndex = std::stoi(from.substr(1)) - 1;
-  int toRow = to[0] - 'a' - 1;
-  int toIndex = std::stoi(to.substr(1)) - 1;
+  char fromRow = from[0];
+  int fromIndex = std::stoi(from.substr(1));
+  char toRow = to[0];
+  int toIndex = std::stoi(to.substr(1));
 
   std::vector<std::string> fields;
 
-  if (fromRow == toRow)
+  int middleRow = size - 1;
+
+  if (toRow == (fromRow + 1) && fromIndex == (toIndex - 1))
   {
-    std::string fieldName;
-    fieldName += from[0];
-    if (fromIndex > toIndex)
+    std::pair<int, int> indexes = getFieldIndexes(to);
+    int x = indexes.first;
+    for (int i = 0; i < board[x].size(); i++)
     {
-      for (int i = fromIndex; i > 1; i--)
-      {
-        fields.push_back(fieldName + std::to_string(i));
-      }
-    }
-    else
-    {
-      for (int i = toIndex + 1; i <= correctRowLength(fromRow) + 1; i++)
-      {
-        fields.push_back(fieldName + std::to_string(i));
-      }
+      fields.push_back(fieldNames[x][i]);
     }
   }
-  else if (fromRow > toRow && fromIndex < toIndex)
+  else if (fromRow == (toRow + 1) && fromIndex == toIndex)
   {
-    std::pair<int, int> indexes;
-    indexes = getFieldIndexes(to);
-
+    std::pair<int, int> indexes = getFieldIndexes(to);
     int x = indexes.first;
-    int y = indexes.second;
-    int middleRow = size - 1;
-
-    for (int i = x; i >= 0; i--)
+    for (int i = board[x].size() - 1; i >= 0; i--)
     {
-      if (i < middleRow)
-      {
-        y--;
-      }
-      fields.push_back(fieldNames[i][y]);
+      fields.push_back(fieldNames[x][i]);
     }
   }
-  else if (fromRow < toRow && fromIndex == toIndex)
+  else if (fromRow == (toRow - 1) && fromIndex == toIndex)
   {
-    std::pair<int, int> indexes;
-    indexes = getFieldIndexes(to);
-
-    int x = indexes.first;
-    int y = indexes.second;
-    int middleRow = size - 1;
-
+    std::pair<int, int> indexes = getFieldIndexes(to);
+    int x = indexes.first, y = indexes.second;
     for (int i = x; i < board.size(); i++)
     {
       fields.push_back(fieldNames[i][y]);
@@ -283,28 +261,47 @@ std::vector<std::string> Board::getRow(std::string from, std::string to)
       }
     }
   }
-  else if (fromRow < toRow && fromIndex == (toIndex - 1))
+  else if (fromRow == (toRow + 1) && fromIndex == (toIndex - 1))
   {
-    std::pair<int, int> indexes;
-    indexes = getFieldIndexes(to);
-
-    int x = indexes.first;
-
-    for (int i = 0; i < board[x].size(); i++)
+    std::pair<int, int> indexes = getFieldIndexes(to);
+    int x = indexes.first, y = indexes.second;
+    for (int i = x; i >= 0; i--)
     {
-      fields.push_back(fieldNames[x][i]);
+      if (i < middleRow)
+      {
+        y--;
+      }
+      fields.push_back(fieldNames[i][y]);
     }
   }
-  else if (fromRow > toRow && fromIndex == toIndex)
+  else if (fromRow == toRow && fromIndex == (toIndex - 1))
   {
-    std::pair<int, int> indexes;
-    indexes = getFieldIndexes(to);
-
-    int x = indexes.first;
-
-    for (int i = board[x].size() - 1; i >= 0; i--)
+    std::pair<int, int> indexes = getFieldIndexes(to);
+    int x = indexes.first, y = indexes.second;
+    for (int i = x; i >= 0; i--)
     {
-      fields.push_back(fieldNames[x][i]);
+      if (fieldNames[i].size() - 1 < y)
+      {
+        break;
+      }
+      fields.push_back(fieldNames[i][y]);
+      if (i > middleRow)
+      {
+        y++;
+      }
+    }
+  }
+  else if (fromRow == toRow && fromIndex == (toIndex + 1))
+  {
+    std::pair<int, int> indexes = getFieldIndexes(to);
+    int x = indexes.first, y = indexes.second;
+    for (int i = x; i < board.size(); i++)
+    {
+      if (i > middleRow)
+      {
+        y--;
+      }
+      fields.push_back(fieldNames[i][y]);
     }
   }
 

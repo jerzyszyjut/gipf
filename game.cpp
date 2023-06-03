@@ -45,7 +45,6 @@ bool Game::validateGame()
 {
   int correctWhitePieces = whitePieces - whitePiecesReserve;
   int correctBlackPieces = blackPieces - blackPiecesReserve;
-  int wrongRows = validateRowsDoNotExceedTreshold();
   if (!board.verifyRowsLengths())
   {
     std::cout << "WRONG_BOARD_ROW_LENGTH" << std::endl;
@@ -58,13 +57,17 @@ bool Game::validateGame()
   {
     std::cout << "WRONG_BLACK_PAWNS_NUMBER" << std::endl;
   }
-  else if (wrongRows)
-  {
-    std::cout << "ERROR_FOUND_" << wrongRows << "_ROW_OF_LENGTH_K" << std::endl;
-  }
   else
   {
-    return true;
+    int wrongRows = validateRowsDoNotExceedTreshold();
+    if (wrongRows)
+    {
+      std::cout << "ERROR_FOUND_" << wrongRows << "_ROW_OF_LENGTH_K" << std::endl;
+    }
+    else
+    {
+      return true;
+    }
   }
   return false;
 }
@@ -341,17 +344,25 @@ int Game::validateRowsDoNotExceedTreshold()
   int wrongRows = 0;
   for (int i = 0; i < moves.size(); i++)
   {
-    std::vector<std::string> row = board.getRow(moves[i].first, moves[i].second);
+    std::pair<std::string, std::string> move = moves[i];
+    std::vector<std::string> row = board.getRow(move.first, move.second);
     int blackCounter = 0, whiteCounter = 0;
     for (int j = 0; j < row.size(); j++)
     {
       if (board.getField(row[j]) == WHITE)
       {
         whiteCounter++;
+        blackCounter = 0;
       }
       else if (board.getField(row[j]) == BLACK)
       {
         blackCounter++;
+        whiteCounter = 0;
+      }
+      else
+      {
+        blackCounter = 0;
+        whiteCounter = 0;
       }
     }
     if (whiteCounter >= triggerTreshold || blackCounter >= triggerTreshold)
