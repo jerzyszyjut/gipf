@@ -45,6 +45,7 @@ bool Game::validateGame()
 {
   int correctWhitePieces = whitePieces - whitePiecesReserve;
   int correctBlackPieces = blackPieces - blackPiecesReserve;
+  int wrongRows = validateRowsDoNotExceedTreshold();
   if (!board.verifyRowsLengths())
   {
     std::cout << "WRONG_BOARD_ROW_LENGTH" << std::endl;
@@ -56,6 +57,10 @@ bool Game::validateGame()
   else if (correctBlackPieces < board.getBlackPiecesCount())
   {
     std::cout << "WRONG_BLACK_PAWNS_NUMBER" << std::endl;
+  }
+  else if (wrongRows)
+  {
+    std::cout << "ERROR_FOUND_" << wrongRows << "_ROW_OF_LENGTH_K" << std::endl;
   }
   else
   {
@@ -266,4 +271,94 @@ bool Game::validateMoveRowIsNotFull(std::string from, std::string to)
     }
   }
   return false;
+}
+
+int Game::validateRowsDoNotExceedTreshold()
+{
+  std::vector<std::pair<std::string, std::string>> moves;
+  std::string from, to;
+
+  // Horizontal moves
+
+  char firstRow = 'a';
+  for (int i = 1; i <= board_size; i++)
+  {
+    from = std::string();
+    to = std::string();
+    from += firstRow;
+    from += (i + '0');
+    to += 'b';
+    to += (i + 1 + '0');
+    moves.push_back(std::make_pair(from, to));
+  }
+  char lastRow = 'a' + (board_size * 2);
+  for (int i = 2; i <= board_size; i++)
+  {
+    from = std::string();
+    to = std::string();
+    from += lastRow;
+    from += (i + '0');
+    to += lastRow - 1;
+    to += (i + '0');
+    moves.push_back(std::make_pair(from, to));
+  }
+
+  // Diagonal moves leftbottom-righttop
+
+  for (int i = 1; (firstRow + i) < lastRow; i++)
+  {
+    from = std::string();
+    to = std::string();
+    from += (firstRow + i);
+    from += '1';
+    to += (firstRow + i);
+    to += ('2');
+    moves.push_back(std::make_pair(from, to));
+  }
+
+  // Diagonal moves lefttop-rightbottom
+  for (int i = 2; i <= board_size + 1; i++)
+  {
+    from = std::string();
+    to = std::string();
+    from += firstRow;
+    from += (i + '0');
+    to += (firstRow + 1);
+    to += (i + '0');
+    moves.push_back(std::make_pair(from, to));
+  }
+  for (int i = 2; i <= board_size; i++)
+  {
+    from = std::string();
+    to = std::string();
+    from += lastRow;
+    from += (i + '0');
+    to += (lastRow - 1);
+    to += (i + 1 + '0');
+    moves.push_back(std::make_pair(from, to));
+  }
+
+  int wrongRows = 0;
+  for (int i = 0; i < moves.size(); i++)
+  {
+    std::vector<std::string> row = board.getRow(moves[i].first, moves[i].second);
+    int blackCounter = 0, whiteCounter = 0;
+    for (int j = 0; j < row.size(); j++)
+    {
+      if (board.getField(row[j]) == WHITE)
+      {
+        whiteCounter++;
+      }
+      else if (board.getField(row[j]) == BLACK)
+      {
+        blackCounter++;
+      }
+    }
+    if (whiteCounter >= triggerTreshold || blackCounter >= triggerTreshold)
+    {
+      wrongRows++;
+    }
+  }
+
+  return wrongRows;
 }

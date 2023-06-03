@@ -27,4 +27,5 @@ private:
   bool validateFieldIsCorrectStartingField(std::string field);
   bool validateFieldIsCorrectEndingField(std::string field);
   bool validateMoveRowIsNotFull(std::string from, std::string to);
+  int validateRowsDoNotExceedTreshold();
 };
