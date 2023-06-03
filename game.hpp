@@ -12,6 +12,7 @@ public:
   Game(std::string gameString);
   bool validateGame();
   void printGame();
+  bool validateMove(std::string move);
   ~Game();
 
 private:
@@ -19,4 +20,10 @@ private:
   char currentPlayer;
   Board board;
   void initGame(std::string gameString);
+  bool validateFieldIsInBounds(std::string field);
+  bool validateFieldIsInGameBounds(std::string field);
+  bool validateFieldsAreInOneDiagonal(std::string from, std::string to);
+  bool validateFieldIsCorrectStartingField(std::string field);
+  bool validateFieldIsCorrectEndingField(std::string field);
+  bool validateMoveRowIsNotFull(std::string from, std::string to);
 };

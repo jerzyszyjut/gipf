@@ -47,7 +47,6 @@ void Board::printBoard()
     }
     std::cout << std::endl;
   }
-  std::cout << std::endl;
 }
 
 int Board::getWhitePiecesCount()
@@ -126,6 +125,41 @@ void Board::initBoard(std::string boardString)
     board.push_back(row);
     lineCount++;
   } while (boardString.length() > 1);
+
+  char startingRow = 'b';
+  int startingIndex = size + 1;
+
+  for (int i = 0; i < board.size(); i++)
+  {
+    std::vector<std::string> row;
+    for (int j = 0; j < board[i].size(); j++)
+    {
+      std::string field = "";
+      field += startingRow + j;
+
+      int maxAdd = size - 1;
+      if (i > size - 1)
+      {
+        maxAdd = (size - 1) - (i - size + 1);
+      }
+      int add = j;
+      if (add >= maxAdd)
+      {
+        add = maxAdd;
+      }
+      field += std::to_string(startingIndex + add);
+      row.push_back(field);
+    }
+    fieldNames.push_back(row);
+    if (i >= size - 1)
+    {
+      startingRow++;
+    }
+    if (i < size - 1)
+    {
+      startingIndex--;
+    }
+  }
 }
 
 bool Board::empty()
@@ -140,4 +174,33 @@ Board::~Board()
 int Board::correctRowLength(int row)
 {
   return (2 * size - 1) - abs(size - (row + 1));
+}
+
+void Board::setField(std::string field, char piece)
+{
+  for (int i = 0; i < fieldNames.size(); i++)
+  {
+    for (int j = 0; j < fieldNames[i].size(); j++)
+    {
+      if (fieldNames[i][j] == field)
+      {
+        board[i][j] = piece;
+      }
+    }
+  }
+}
+
+char Board::getField(std::string field)
+{
+  for (int i = 0; i < fieldNames.size(); i++)
+  {
+    for (int j = 0; j < fieldNames[i].size(); j++)
+    {
+      if (fieldNames[i][j] == field)
+      {
+        return board[i][j];
+      }
+    }
+  }
+  return NULL;
 }

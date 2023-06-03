@@ -26,6 +26,13 @@ void Controller::executeCommand(std::string command)
   {
     printGame();
   }
+  else if (command == "DO_MOVE")
+  {
+    std::string move;
+    std::cin >> move;
+    game.validateMove(move);
+  }
+  std::cout << std::endl;
 }
 
 void Controller::loadGame()
