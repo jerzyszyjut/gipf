@@ -10,6 +10,7 @@ public:
   Game();
   Game(const Game &orig);
   Game(std::string gameString);
+  bool validateGame();
   ~Game();
 
 private:

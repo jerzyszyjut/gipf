@@ -49,6 +49,51 @@ void Board::printBoard()
   }
 }
 
+int Board::getWhitePiecesCount()
+{
+  int counter = 0;
+  for (int i = 0; i < board.size(); i++)
+  {
+    for (int j = 0; j < board[i].size(); j++)
+    {
+      if (board[i][j] == WHITE)
+        counter++;
+    }
+  }
+  return counter;
+}
+
+int Board::getBlackPiecesCount()
+{
+  int counter = 0;
+  for (int i = 0; i < board.size(); i++)
+  {
+    for (int j = 0; j < board[i].size(); j++)
+    {
+      if (board[i][j] == BLACK)
+        counter++;
+    }
+  }
+  return counter;
+}
+
+bool Board::verifyRowsLengths()
+{
+  int correctLength = size * 2 - 1;
+  if (board.size() != correctLength)
+  {
+    return false;
+  }
+  for (int i = 0; i < board.size(); i++)
+  {
+    if (board[i].size() != correctLength)
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
 void Board::initBoard(std::string boardString)
 {
   int lineCount = 0;
@@ -56,6 +101,10 @@ void Board::initBoard(std::string boardString)
   {
     std::string line = boardString.substr(0, boardString.find("\n"));
     boardString = boardString.substr(boardString.find("\n") + 1);
+    if (line[0] == '\r')
+    {
+      break;
+    }
 
     std::vector<char> row;
 
@@ -79,12 +128,6 @@ void Board::initBoard(std::string boardString)
         }
       }
     }
-
-    for (int j = 0; j < spaces; j++)
-    {
-      row.push_back(NULL);
-    }
-
     board.push_back(row);
     lineCount++;
   } while (boardString.length() > 1);

@@ -32,6 +32,6 @@ void Controller::loadGame()
   {
     std::getline(std::cin, line);
     gameString += line + "\n";
-  } while (line.length() > 1);
+  } while (line.length() > 1 && !std::cin.eof());
   Game game = Game(gameString);
 }

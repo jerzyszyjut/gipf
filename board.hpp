@@ -17,6 +17,9 @@ public:
   Board(std::string boardString, int size);
   ~Board();
   void printBoard();
+  int getWhitePiecesCount();
+  int getBlackPiecesCount();
+  bool verifyRowsLengths();
 
 private:
   int size;

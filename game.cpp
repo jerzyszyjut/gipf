@@ -1,4 +1,5 @@
 #include "game.hpp"
+#include <iostream>
 
 Game::Game()
 {
@@ -24,9 +25,43 @@ Game::Game(std::string gameString)
   initGame(gameString);
   gameString = gameString.substr(gameString.find("\n") + 1);
   gameString = gameString.substr(gameString.find("\n") + 1);
-  gameString = gameString.substr(0, gameString.length() - 1);
+  if (gameString[gameString.length() - 2] == '\n')
+  {
+    gameString = gameString.substr(0, gameString.length() - 1);
+  }
   board = Board(gameString, board_size);
-  board.printBoard();
+  bool isGameValid = validateGame();
+  if (isGameValid)
+  {
+    std::cout << "BOARD_STATE_OK" << std::endl;
+  }
+  else
+  {
+    board = Board();
+  }
+}
+
+bool Game::validateGame()
+{
+  int correctWhitePieces = whitePieces - whitePiecesReserve;
+  int correctBlackPieces = blackPieces - blackPiecesReserve;
+  if (!board.verifyRowsLengths())
+  {
+    std::cout << "WRONG_BOARD_ROW_LENGTH" << std::endl;
+  }
+  else if (correctWhitePieces < board.getWhitePiecesCount())
+  {
+    std::cout << "WRONG_WHITE_PAWNS_NUMBER" << std::endl;
+  }
+  else if (correctBlackPieces < board.getBlackPiecesCount())
+  {
+    std::cout << "WRONG_BLACK_PAWNS_NUMBER" << std::endl;
+  }
+  else
+  {
+    return true;
+  }
+  return false;
 }
 
 Game::~Game()
