@@ -177,6 +177,103 @@ void Game::doMove(std::string move)
     currentPlayer = WHITE_PLAYER;
     blackPiecesReserve--;
   }
+
+  std::vector<std::pair<std::string, char>> fieldsToEmpty;
+
+  std::vector<std::pair<std::string, std::string>> moves = getAllPossibleMoves();
+  for (int i = 0; i < moves.size(); i++)
+  {
+    row = board.getRow(moves[i].first, moves[i].second);
+    int blackCounter = 0, whiteCounter = 0;
+    char winner = EMPTY;
+    int lineStart = -1, lineEnd = -1;
+    bool winnerLineBreak = false;
+    for (int j = 0; j < row.size(); j++)
+    {
+      char field = board.getField(row[j]);
+      if (field == EMPTY || lineEnd == -1)
+      {
+        lineEnd = j;
+      }
+      if (field != EMPTY && lineStart == -1)
+      {
+        lineStart = j;
+      }
+
+      if (field == WHITE)
+      {
+        whiteCounter++;
+        blackCounter = 0;
+      }
+      else if (field == BLACK)
+      {
+        blackCounter++;
+        whiteCounter = 0;
+      }
+      else
+      {
+        blackCounter = 0;
+        whiteCounter = 0;
+        if (winner != EMPTY)
+        {
+          winnerLineBreak = true;
+        }
+        if (winner == EMPTY)
+        {
+          lineEnd = -1;
+          lineStart = -1;
+        }
+      }
+      if (whiteCounter >= triggerTreshold)
+      {
+        winner = WHITE;
+        lineEnd = j;
+        winnerLineBreak = false;
+      }
+      else if (blackCounter >= triggerTreshold)
+      {
+        winner = BLACK;
+        lineEnd = j;
+        winnerLineBreak = false;
+      }
+      if (!winnerLineBreak)
+      {
+        lineEnd = j;
+      }
+    }
+
+    if (lineEnd < lineStart || lineEnd == -1)
+    {
+      lineEnd = row.size() - 1;
+    }
+
+    if (winner != EMPTY)
+    {
+      for (int j = lineStart; j <= lineEnd; j++)
+      {
+        fieldsToEmpty.push_back(std::make_pair(row[j], winner));
+      }
+    }
+  }
+
+  for (int i = 0; i < fieldsToEmpty.size(); i++)
+  {
+    if (fieldsToEmpty[i].second == WHITE)
+    {
+      if (board.getField(fieldsToEmpty[i].first) == WHITE)
+      {
+        whitePiecesReserve++;
+      }
+    }
+    else
+    {
+      if (board.getField(fieldsToEmpty[i].first) == BLACK)
+      {
+        blackPiecesReserve++;
+      }
+    }
+    board.setField(fieldsToEmpty[i].first, EMPTY);
+  }
 }
 
 bool Game::validateFieldIsInBounds(std::string field)
@@ -280,7 +377,7 @@ bool Game::validateMoveRowIsNotFull(std::string from, std::string to)
   return false;
 }
 
-int Game::validateRowsDoNotExceedTreshold()
+std::vector<std::pair<std::string, std::string>> Game::getAllPossibleMoves()
 {
   std::vector<std::pair<std::string, std::string>> moves;
   std::string from, to;
@@ -345,6 +442,12 @@ int Game::validateRowsDoNotExceedTreshold()
     moves.push_back(std::make_pair(from, to));
   }
 
+  return moves;
+}
+
+int Game::validateRowsDoNotExceedTreshold()
+{
+  std::vector<std::pair<std::string, std::string>> moves = getAllPossibleMoves();
   int wrongRows = 0;
   for (int i = 0; i < moves.size(); i++)
   {

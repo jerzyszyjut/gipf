@@ -28,4 +28,5 @@ private:
   bool validateFieldIsCorrectEndingField(std::string field);
   bool validateMoveRowIsNotFull(std::string from, std::string to);
   int validateRowsDoNotExceedTreshold();
+  std::vector<std::pair<std::string, std::string>> getAllPossibleMoves();
 };
