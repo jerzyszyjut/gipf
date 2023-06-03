@@ -60,9 +60,13 @@ bool Game::validateGame()
   else
   {
     int wrongRows = validateRowsDoNotExceedTreshold();
-    if (wrongRows)
+    if (wrongRows == 1)
     {
       std::cout << "ERROR_FOUND_" << wrongRows << "_ROW_OF_LENGTH_K" << std::endl;
+    }
+    else if (wrongRows > 1)
+    {
+      std::cout << "ERROR_FOUND_" << wrongRows << "_ROWS_OF_LENGTH_K" << std::endl;
     }
     else
     {
@@ -364,10 +368,11 @@ int Game::validateRowsDoNotExceedTreshold()
         blackCounter = 0;
         whiteCounter = 0;
       }
-    }
-    if (whiteCounter >= triggerTreshold || blackCounter >= triggerTreshold)
-    {
-      wrongRows++;
+      if (whiteCounter >= triggerTreshold || blackCounter >= triggerTreshold)
+      {
+        wrongRows++;
+        break;
+      }
     }
   }
 
