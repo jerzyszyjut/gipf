@@ -30,7 +30,10 @@ void Controller::executeCommand(std::string command)
   {
     std::string move;
     std::cin >> move;
-    game.validateMove(move);
+    if (game.validateMove(move))
+    {
+      game.doMove(move);
+    }
   }
   std::cout << std::endl;
 }

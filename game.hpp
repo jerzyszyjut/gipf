@@ -13,6 +13,7 @@ public:
   bool validateGame();
   void printGame();
   bool validateMove(std::string move);
+  void doMove(std::string move);
   ~Game();
 
 private:

@@ -135,8 +135,36 @@ bool Game::validateMove(std::string move)
     std::cout << "BAD_MOVE_ROW_IS_FULL" << std::endl;
     return false;
   }
-  std::cout << "MOVE_COMMITED" << std::endl;
   return true;
+}
+
+void Game::doMove(std::string move)
+{
+  std::string from = move.substr(0, move.find("-"));
+  std::string to = move.substr(move.find("-") + 1);
+  std::vector<std::string> row = board.getRow(from, to);
+  char currentPawn = currentPlayer;
+  for (int i = 0; i < row.size() - 1; i++)
+  {
+    char removedPawn = board.getField(row[i]);
+    board.setField(row[i], currentPawn);
+    currentPawn = removedPawn;
+    if (currentPawn == EMPTY)
+    {
+      break;
+    }
+  }
+  std::cout << "MOVE_COMMITTED" << std::endl;
+  if (currentPlayer == WHITE_PLAYER)
+  {
+    currentPlayer = BLACK_PLAYER;
+    whitePiecesReserve--;
+  }
+  else
+  {
+    currentPlayer = WHITE_PLAYER;
+    blackPiecesReserve--;
+  }
 }
 
 bool Game::validateFieldIsInBounds(std::string field)

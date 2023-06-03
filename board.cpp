@@ -283,7 +283,7 @@ std::vector<std::string> Board::getRow(std::string from, std::string to)
       }
     }
   }
-  else if ((fromRow < toRow && fromIndex == (toIndex - 1)) || (fromRow > toRow && fromIndex == toIndex))
+  else if (fromRow < toRow && fromIndex == (toIndex - 1))
   {
     std::pair<int, int> indexes;
     indexes = getFieldIndexes(to);
@@ -291,6 +291,18 @@ std::vector<std::string> Board::getRow(std::string from, std::string to)
     int x = indexes.first;
 
     for (int i = 0; i < board[x].size(); i++)
+    {
+      fields.push_back(fieldNames[x][i]);
+    }
+  }
+  else if (fromRow > toRow && fromIndex == toIndex)
+  {
+    std::pair<int, int> indexes;
+    indexes = getFieldIndexes(to);
+
+    int x = indexes.first;
+
+    for (int i = board[x].size() - 1; i >= 0; i--)
     {
       fields.push_back(fieldNames[x][i]);
     }
