@@ -162,16 +162,16 @@ bool Game::validateFieldIsInBounds(std::string field)
 bool Game::validateFieldIsInGameBounds(std::string field)
 {
   int row = field[0] - 'a' - 1;
-  int index = std::stoi(field.substr(1)) - 2;
+  int index = std::stoi(field.substr(1)) - 1;
 
   int maxRow = board_size * 2 - 2;
-  int maxIndex = board.correctRowLength(row) + 1;
+  int maxIndex = board.correctRowLength(row);
 
   if (row < 0 || row > maxRow)
   {
     return false;
   }
-  if (index < 0 || index > maxIndex)
+  if (index <= 0 || index > maxIndex)
   {
     return false;
   }
@@ -185,20 +185,36 @@ bool Game::validateFieldsAreInOneDiagonal(std::string from, std::string to)
     return false;
   }
 
-  int fromRow = from[0] - 'a' - 1;
+  int fromRow = from[0] - 'a';
   int fromIndex = std::stoi(from.substr(1)) - 1;
-  int toRow = to[0] - 'a' - 1;
+  int toRow = to[0] - 'a';
   int toIndex = std::stoi(to.substr(1)) - 1;
 
-  int rowDiff = toRow - fromRow;
-  int indexDiff = toIndex - fromIndex;
-  int diff = abs(rowDiff) + abs(indexDiff);
-  if (diff != 2 && diff != 0)
+  if ((fromRow == 0 && fromIndex > 0) && (fromRow == (toRow - 1) && toIndex == fromIndex))
   {
-    return false;
+    return true;
   }
-
-  return true;
+  if ((fromRow == 0 && fromIndex == 0) && (fromRow == (toRow - 1) && toIndex == (fromIndex + 1)))
+  {
+    return true;
+  }
+  if (((fromRow > 0 && fromRow < (2 * board_size)) && fromIndex == 0) && (toRow == fromRow && toIndex == (fromIndex + 1)))
+  {
+    return true;
+  }
+  if ((fromRow == (2 * board_size) && fromIndex < board_size) && (toRow == (fromRow - 1) && toIndex == (fromIndex + 1)))
+  {
+    return true;
+  }
+  if ((fromRow == (2 * board_size) && fromIndex == board_size) && (toRow == (fromRow - 1) && toIndex == fromIndex))
+  {
+    return true;
+  }
+  if ((fromRow > 0 && fromRow < (2 * board_size)) && (fromIndex == (board.correctRowLength(fromRow - 1) + 1)) && (toRow == fromRow && toIndex == (fromIndex - 1)))
+  {
+    return true;
+  }
+  return false;
 }
 
 bool Game::validateFieldIsCorrectStartingField(std::string field)
@@ -213,4 +229,13 @@ bool Game::validateFieldIsCorrectEndingField(std::string field)
 
 bool Game::validateMoveRowIsNotFull(std::string from, std::string to)
 {
+  std::vector<std::string> row = board.getRow(from, to);
+  for (int i = 0; i < row.size(); i++)
+  {
+    if (board.getField(row[i]) == EMPTY)
+    {
+      return true;
+    }
+  }
+  return false;
 }

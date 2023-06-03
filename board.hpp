@@ -20,7 +20,10 @@ public:
   bool empty();
   int correctRowLength(int row);
   void setField(std::string field, char piece);
+  void setField(char key, int index, char piece);
+  std::pair<int, int> getFieldIndexes(std::string field);
   char getField(std::string field);
+  std::vector<std::string> getRow(std::string from, std::string to);
 
 private:
   int size;

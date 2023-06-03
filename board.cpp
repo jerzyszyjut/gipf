@@ -31,7 +31,7 @@ void Board::printBoard()
     }
     for (int j = 0; j < row.size(); j++)
     {
-      if (row[j] == NULL)
+      if (row[j] == EMPTY)
       {
         std::cout << "_";
       }
@@ -114,7 +114,7 @@ void Board::initBoard(std::string boardString)
       {
         if (line[i] == '_')
         {
-          row.push_back(NULL);
+          row.push_back(EMPTY);
         }
         else
         {
@@ -176,7 +176,7 @@ int Board::correctRowLength(int row)
   return (2 * size - 1) - abs(size - (row + 1));
 }
 
-void Board::setField(std::string field, char piece)
+std::pair<int, int> Board::getFieldIndexes(std::string field)
 {
   for (int i = 0; i < fieldNames.size(); i++)
   {
@@ -184,23 +184,117 @@ void Board::setField(std::string field, char piece)
     {
       if (fieldNames[i][j] == field)
       {
-        board[i][j] = piece;
+        return std::make_pair(i, j);
       }
     }
   }
+  return std::make_pair(-1, -1);
 }
 
 char Board::getField(std::string field)
 {
-  for (int i = 0; i < fieldNames.size(); i++)
+  std::pair<int, int> indexes = getFieldIndexes(field);
+  if (indexes.first == -1)
   {
-    for (int j = 0; j < fieldNames[i].size(); j++)
+    return NULL;
+  }
+  return board[indexes.first][indexes.second];
+}
+
+void Board::setField(std::string field, char piece)
+{
+  std::pair<int, int> indexes = getFieldIndexes(field);
+  if (indexes.first == -1)
+  {
+    return;
+  }
+  board[indexes.first][indexes.second] = piece;
+}
+
+void Board::setField(char key, int index, char piece)
+{
+  std::string field = "";
+  field += key;
+  field += std::to_string(index);
+  setField(field, piece);
+}
+
+std::vector<std::string> Board::getRow(std::string from, std::string to)
+{
+  int fromRow = from[0] - 'a' - 1;
+  int fromIndex = std::stoi(from.substr(1)) - 1;
+  int toRow = to[0] - 'a' - 1;
+  int toIndex = std::stoi(to.substr(1)) - 1;
+
+  std::vector<std::string> fields;
+
+  if (fromRow == toRow)
+  {
+    std::string fieldName;
+    fieldName += from[0];
+    if (fromIndex > toIndex)
     {
-      if (fieldNames[i][j] == field)
+      for (int i = fromIndex; i > 1; i--)
       {
-        return board[i][j];
+        fields.push_back(fieldName + std::to_string(i));
+      }
+    }
+    else
+    {
+      for (int i = toIndex + 1; i <= correctRowLength(fromRow) + 1; i++)
+      {
+        fields.push_back(fieldName + std::to_string(i));
       }
     }
   }
-  return NULL;
+  else if (fromRow > toRow && fromIndex < toIndex)
+  {
+    std::pair<int, int> indexes;
+    indexes = getFieldIndexes(to);
+
+    int x = indexes.first;
+    int y = indexes.second;
+    int middleRow = size - 1;
+
+    for (int i = x; i >= 0; i--)
+    {
+      if (i < middleRow)
+      {
+        y--;
+      }
+      fields.push_back(fieldNames[i][y]);
+    }
+  }
+  else if (fromRow < toRow && fromIndex == toIndex)
+  {
+    std::pair<int, int> indexes;
+    indexes = getFieldIndexes(to);
+
+    int x = indexes.first;
+    int y = indexes.second;
+    int middleRow = size - 1;
+
+    for (int i = x; i < board.size(); i++)
+    {
+      fields.push_back(fieldNames[i][y]);
+      if (i < middleRow)
+      {
+        y++;
+      }
+    }
+  }
+  else if ((fromRow < toRow && fromIndex == (toIndex - 1)) || (fromRow > toRow && fromIndex == toIndex))
+  {
+    std::pair<int, int> indexes;
+    indexes = getFieldIndexes(to);
+
+    int x = indexes.first;
+
+    for (int i = 0; i < board[x].size(); i++)
+    {
+      fields.push_back(fieldNames[x][i]);
+    }
+  }
+
+  return fields;
 }
