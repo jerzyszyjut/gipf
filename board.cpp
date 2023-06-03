@@ -27,8 +27,7 @@ void Board::printBoard()
     int spaces = abs(size - (i + 1));
     for (int j = 0; j < row.size(); j++)
     {
-      if (j < spaces ||
-          j >= (row.size() - spaces))
+      if (j < spaces)
       {
         std::cout << " ";
       }
@@ -45,8 +44,13 @@ void Board::printBoard()
         std::cout << " ";
       }
     }
+    for (int j = 0; j < spaces; j++)
+    {
+      std::cout << " ";
+    }
     std::cout << std::endl;
   }
+  std::cout << std::endl;
 }
 
 int Board::getWhitePiecesCount()
@@ -131,6 +135,11 @@ void Board::initBoard(std::string boardString)
     board.push_back(row);
     lineCount++;
   } while (boardString.length() > 1);
+}
+
+bool Board::empty()
+{
+  return board.size() == 0;
 }
 
 Board::~Board()

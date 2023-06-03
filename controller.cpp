@@ -22,6 +22,10 @@ void Controller::executeCommand(std::string command)
   {
     loadGame();
   }
+  else if (command == "PRINT_GAME_BOARD")
+  {
+    printGame();
+  }
 }
 
 void Controller::loadGame()
@@ -33,5 +37,10 @@ void Controller::loadGame()
     std::getline(std::cin, line);
     gameString += line + "\n";
   } while (line.length() > 1 && !std::cin.eof());
-  Game game = Game(gameString);
+  game = Game(gameString);
+}
+
+void Controller::printGame()
+{
+  game.printGame();
 }

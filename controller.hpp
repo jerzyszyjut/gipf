@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "game.hpp"
 
 class Controller
 {
@@ -10,4 +11,6 @@ public:
 private:
   void executeCommand(std::string command);
   void loadGame();
+  void printGame();
+  Game game;
 };

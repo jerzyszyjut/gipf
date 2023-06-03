@@ -2,9 +2,9 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
 
-exe_path=$(find . -name "$1.exe")
+exe_path=$(find . -name "$1")
 if [ -z "$exe_path" ]; then
-    echo "Nie znaleziono pliku $1.exe"
+    echo "Nie znaleziono pliku $1"
     exit 1
 fi
 

@@ -11,6 +11,7 @@ public:
   Game(const Game &orig);
   Game(std::string gameString);
   bool validateGame();
+  void printGame();
   ~Game();
 
 private:

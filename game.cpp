@@ -86,5 +86,17 @@ void Game::initGame(std::string gameString)
   second_line = second_line.substr(second_line.find(" ") + 1);
   blackPiecesReserve = std::stoi(second_line.substr(0, second_line.find(" ")).c_str());
   second_line = second_line.substr(second_line.find(" ") + 1);
-  currentPlayer = second_line[second_line.find(" ") + 1];
+  currentPlayer = second_line[0];
+}
+
+void Game::printGame()
+{
+  if (board.empty())
+  {
+    std::cout << "EMPTY_BOARD" << std::endl;
+    return;
+  }
+  std::cout << board_size << " " << triggerTreshold << " " << whitePieces << " " << blackPieces << std::endl;
+  std::cout << whitePiecesReserve << " " << blackPiecesReserve << " " << currentPlayer << std::endl;
+  board.printBoard();
 }

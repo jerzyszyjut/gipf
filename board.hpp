@@ -20,6 +20,7 @@ public:
   int getWhitePiecesCount();
   int getBlackPiecesCount();
   bool verifyRowsLengths();
+  bool empty();
 
 private:
   int size;
