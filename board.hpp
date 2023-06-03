@@ -26,4 +26,5 @@ private:
   int size;
   std::vector<std::vector<char>> board;
   void initBoard(std::string boardString);
+  int correctRowLength(int row);
 };

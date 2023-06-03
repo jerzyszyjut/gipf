@@ -25,24 +25,21 @@ void Board::printBoard()
   {
     std::vector<char> row = board[i];
     int spaces = abs(size - (i + 1));
+    for (int j = 0; j < spaces; j++)
+    {
+      std::cout << " ";
+    }
     for (int j = 0; j < row.size(); j++)
     {
-      if (j < spaces)
+      if (row[j] == NULL)
       {
-        std::cout << " ";
+        std::cout << "_";
       }
       else
       {
-        if (row[j] == NULL)
-        {
-          std::cout << "_";
-        }
-        else
-        {
-          std::cout << row[j];
-        }
-        std::cout << " ";
+        std::cout << row[j];
       }
+      std::cout << " ";
     }
     for (int j = 0; j < spaces; j++)
     {
@@ -90,7 +87,7 @@ bool Board::verifyRowsLengths()
   }
   for (int i = 0; i < board.size(); i++)
   {
-    if (board[i].size() != correctLength)
+    if (board[i].size() != correctRowLength(i))
     {
       return false;
     }
@@ -111,12 +108,6 @@ void Board::initBoard(std::string boardString)
     }
 
     std::vector<char> row;
-
-    int spaces = abs(size - (lineCount + 1));
-    for (int j = 0; j < spaces; j++)
-    {
-      row.push_back(NULL);
-    }
 
     for (int i = 0; i < line.length(); i++)
     {
@@ -144,4 +135,9 @@ bool Board::empty()
 
 Board::~Board()
 {
+}
+
+int Board::correctRowLength(int row)
+{
+  return (2 * size - 1) - abs(size - (row + 1));
 }
